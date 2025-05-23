@@ -1,5 +1,42 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { FaHeart, FaUsers, FaStar } from 'react-icons/fa'
+import { GiCook, GiPlantRoots } from 'react-icons/gi'
+import { IoRestaurantOutline } from 'react-icons/io5'
+
+const StorySection = ({ children, image, reverse = false }) => {
+  const sectionRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  })
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [0, 1, 1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.95])
+
+  return (
+    <motion.section
+      ref={sectionRef}
+      className="relative min-h-screen py-32 overflow-hidden"
+    >
+      <motion.div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ 
+          backgroundImage: `url('${image}')`,
+          y,
+          opacity: 0.05,
+          scale
+        }}
+      />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${reverse ? 'lg:flex-row-reverse' : ''}`}>
+          {children}
+        </div>
+      </div>
+    </motion.section>
+  )
+}
 
 const About = () => {
   const containerRef = useRef(null)
@@ -8,169 +45,153 @@ const About = () => {
     offset: ["start start", "end start"]
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "25%"])
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.1, 1.2])
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="min-h-screen bg-secondary-900"
-    >
+    <div ref={containerRef} className="relative bg-secondary-900">
       {/* Hero Section */}
-      <div ref={containerRef} className="relative h-screen">
+      <motion.div className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <motion.div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1543362906-acfc16c67564')",
-            y
+          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600891964092-4316c288032e')] bg-cover bg-center bg-no-repeat"
+          style={{ y, scale }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-secondary-900" />
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="relative text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+        >
+          <GiCook className="text-primary-400 text-5xl mx-auto mb-8" />
+          <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-8">
+            Our Story
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            A journey of passion, innovation, and commitment to vegetarian excellence
+          </p>
+        </motion.div>
+      </motion.div>
+
+      {/* Extra Large Spacer */}
+      <div className="h-[70vh]" />
+
+      {/* Our Beginning */}
+      <StorySection image="https://images.unsplash.com/photo-1600891964092-4316c288032e">
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+          className="space-y-8"
+        >
+          <div className="flex items-center gap-4">
+            <span className="h-[1px] w-12 bg-primary-400/50" />
+            <GiPlantRoots className="text-primary-400 text-2xl" />
+            <h2 className="text-primary-400 font-medium tracking-wider uppercase">Our Beginning</h2>
+          </div>
+          <h3 className="text-4xl md:text-5xl font-display font-bold text-white leading-tight">
+            A Vision of Modern
+            <br />
+            <span className="bg-gradient-to-r from-primary-400 to-primary-500 bg-clip-text text-transparent">
+              Vegetarian
+            </span> Cuisine
+          </h3>
+          <p className="text-gray-400 text-lg leading-relaxed">
+            Founded in 2010, VegFresh began with a simple yet ambitious vision: to revolutionize vegetarian dining. Our journey started with the belief that plant-based cuisine could be both innovative and deeply satisfying.
+          </p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+          className="relative"
+        >
+          <div className="aspect-w-4 aspect-h-3 rounded-2xl overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1600891964092-4316c288032e"
+              alt="Our restaurant"
+              className="object-cover"
+            />
+          </div>
+        </motion.div>
+      </StorySection>
+
+      {/* Extra Large Spacer */}
+      <div className="h-[70vh]" />
+
+      {/* Our Values */}
+      <section className="relative min-h-screen py-32">
+        <motion.div 
+          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1533640924469-f04e06f8898d')] bg-cover bg-center bg-no-repeat"
+          style={{ 
+            y: useTransform(scrollYProgress, [0, 1], ["0%", "20%"]),
+            opacity: 0.05,
+            scale: useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.95])
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary-900 via-secondary-900/50 to-secondary-900" />
-        <div className="relative h-full flex flex-col items-center justify-center text-white px-4">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-display font-bold text-center mb-4"
-          >
-            Our Story
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-gray-400 text-center max-w-2xl"
-          >
-            A journey of flavors, tradition, and innovation
-          </motion.p>
-        </div>
-      </div>
-
-      {/* Content Sections */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Vision Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-center mb-24"
           >
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-white">
-              Modern Vegetarian Cuisine
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <span className="h-[1px] w-12 bg-primary-400/50" />
+              <FaHeart className="text-primary-400 text-2xl" />
+              <h2 className="text-primary-400 font-medium tracking-wider uppercase">Our Values</h2>
+              <span className="h-[1px] w-12 bg-primary-400/50" />
+            </div>
+            <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-8">
+              What We Stand For
             </h2>
-            <p className="text-gray-400">
-              At VegFresh, we reimagine traditional kebab recipes with a modern vegetarian twist. Our journey began with a simple vision: to create extraordinary plant-based dishes that celebrate the rich heritage of kebab cuisine while embracing contemporary culinary innovations.
-            </p>
-            <p className="text-gray-400">
-              Every dish we serve is a testament to our commitment to quality, creativity, and sustainable dining. We source the finest organic ingredients and combine them with exotic spices to create unforgettable flavors.
-            </p>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative h-[400px] rounded-lg overflow-hidden"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1625938144755-652e08e359b7"
-              alt="Modern vegetarian cuisine"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          </motion.div>
-        </div>
 
-        {/* Values Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-          {[
-            {
-              title: "Quality",
-              description: "We source only the finest organic ingredients for our dishes.",
-              icon: "🌟"
-            },
-            {
-              title: "Innovation",
-              description: "Constantly exploring new techniques and flavor combinations.",
-              icon: "🔬"
-            },
-            {
-              title: "Sustainability",
-              description: "Committed to eco-friendly practices and minimal waste.",
-              icon: "🌱"
-            }
-          ].map((value, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              className="bg-white/5 backdrop-blur-md rounded-lg p-8 hover:bg-white/10 transition-colors"
-            >
-              <span className="text-4xl mb-4 block">{value.icon}</span>
-              <h3 className="text-xl font-display font-bold text-white mb-4">
-                {value.title}
-              </h3>
-              <p className="text-gray-400">
-                {value.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Team Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="text-center"
-        >
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-16">
-            Meet Our Culinary Artists
-          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
               {
-                name: "Chef Sarah",
-                role: "Head Chef",
-                image: "https://images.unsplash.com/photo-1583394293214-28ded15ee548"
+                icon: IoRestaurantOutline,
+                title: "Culinary Excellence",
+                description: "We pursue perfection in every dish, combining traditional techniques with modern innovation."
               },
               {
-                name: "Chef Michael",
-                role: "Sous Chef",
-                image: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c"
+                icon: FaUsers,
+                title: "Community Focus",
+                description: "Our restaurant is more than a dining spot—it's a gathering place for like-minded food enthusiasts."
               },
               {
-                name: "Chef Lisa",
-                role: "Pastry Chef",
-                image: "https://images.unsplash.com/photo-1581299894007-aaa50297cf16"
+                icon: FaStar,
+                title: "Sustainability",
+                description: "We're committed to environmental responsibility in every aspect of our operation."
               }
-            ].map((member, index) => (
+            ].map((value, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.2 }}
-                className="group"
+                className="text-center"
               >
-                <div className="relative h-[300px] rounded-lg overflow-hidden mb-4">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-                <h3 className="text-xl font-display font-bold text-white mb-1">
-                  {member.name}
+                <value.icon className="text-primary-400 text-4xl mx-auto mb-6" />
+                <h3 className="text-2xl font-display font-bold text-white mb-4">
+                  {value.title}
                 </h3>
-                <p className="text-primary-400">
-                  {member.role}
+                <p className="text-gray-400">
+                  {value.description}
                 </p>
               </motion.div>
             ))}
           </div>
-        </motion.div>
-      </div>
-    </motion.div>
+        </div>
+      </section>
+
+      {/* Extra Large Spacer */}
+      <div className="h-[70vh]" />
+
+      {/* Final Spacer */}
+      <div className="h-[50vh]" />
+    </div>
   )
 }
 

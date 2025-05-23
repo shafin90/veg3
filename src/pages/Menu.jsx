@@ -1,158 +1,254 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { FaLeaf, FaFire, FaSeedling, FaStar } from 'react-icons/fa'
+import { IoRestaurant } from 'react-icons/io5'
+import { GiMushrooms } from 'react-icons/gi'
 
-const MenuSection = ({ title, items }) => (
-  <div className="mb-16">
-    <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-8 relative inline-block">
-      {title}
-      <motion.div
-        className="absolute -bottom-2 left-0 w-full h-0.5 bg-primary-400"
-        initial={{ width: 0 }}
-        whileInView={{ width: '100%' }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
+const MenuSection = ({ title, subtitle, children, icon: Icon }) => {
+  const sectionRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  })
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [0, 1, 1, 0])
+
+  return (
+    <motion.section 
+      ref={sectionRef}
+      className="relative min-h-screen py-32 overflow-hidden"
+    >
+      <motion.div 
+        className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1606491956689-2ea866880c84')] bg-cover bg-center bg-no-repeat"
+        style={{ y, opacity: 0.05 }}
       />
-    </h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {items.map((item, index) => (
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          key={index}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
-          className="bg-white/5 backdrop-blur-md rounded-lg p-6 hover:bg-white/10 transition-colors"
+          viewport={{ once: true }}
+          className="text-center mb-24"
         >
-          <div className="flex justify-between items-start gap-4">
-            <div>
-              <h4 className="text-xl font-display font-bold text-white mb-2">{item.name}</h4>
-              <p className="text-gray-400 text-sm">{item.description}</p>
-            </div>
-            <span className="text-primary-400 font-medium">{item.price}</span>
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <span className="h-[1px] w-12 bg-primary-400/50" />
+            <Icon className="text-primary-400 text-2xl" />
+            <h2 className="text-primary-400 font-medium tracking-wider uppercase">{subtitle}</h2>
+            <span className="h-[1px] w-12 bg-primary-400/50" />
           </div>
-          {item.spicy && (
-            <span className="inline-block mt-2 text-xs font-medium text-primary-400 bg-primary-400/10 px-2 py-1 rounded">
-              Spicy 🌶️
-            </span>
-          )}
+          <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-8 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+            {title}
+          </h2>
         </motion.div>
-      ))}
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+          {children}
+        </div>
+      </div>
+    </motion.section>
+  )
+}
+
+const MenuItem = ({ name, description, price, isSpicy, isVegan, isNew }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-100px" }}
+    className="group relative"
+  >
+    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-primary-400/5 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <div className="relative bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 group-hover:border-primary-500/30 transition-all duration-500">
+      <div className="flex justify-between items-start gap-4 mb-4">
+        <h3 className="text-xl font-display font-bold text-white group-hover:text-primary-400 transition-colors">
+          {name}
+        </h3>
+        <span className="text-primary-400 font-medium whitespace-nowrap">
+          {price}
+        </span>
+      </div>
+      <p className="text-gray-400 text-sm mb-4">
+        {description}
+      </p>
+      <div className="flex items-center gap-3">
+        {isSpicy && (
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-primary-400/90 bg-primary-400/10 px-2 py-1 rounded-full">
+            <FaFire className="text-xs" /> Spicy
+          </span>
+        )}
+        {isVegan && (
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-green-400/90 bg-green-400/10 px-2 py-1 rounded-full">
+            <FaLeaf className="text-xs" /> Vegan
+          </span>
+        )}
+        {isNew && (
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-blue-400/90 bg-blue-400/10 px-2 py-1 rounded-full">
+            New
+          </span>
+        )}
+      </div>
     </div>
-  </div>
+  </motion.div>
 )
 
 const Menu = () => {
-  const menuData = {
-    starters: [
-      {
-        name: "Mushroom Galouti Kebab",
-        description: "Melt-in-mouth kebabs made with exotic mushrooms and royal spices",
-        price: "$12.99",
-        spicy: true
-      },
-      {
-        name: "Paneer Tikka",
-        description: "Marinated cottage cheese with bell peppers and onions",
-        price: "$10.99"
-      },
-      {
-        name: "Vegetable Seekh",
-        description: "Minced vegetables skewered and grilled with aromatic spices",
-        price: "$11.99"
-      },
-      {
-        name: "Hariyali Kebab",
-        description: "Green herb-infused vegetable patties grilled to perfection",
-        price: "$13.99"
-      }
-    ],
-    mainCourse: [
-      {
-        name: "Royal Veggie Platter",
-        description: "Assortment of our signature kebabs with mint chutney and special sauces",
-        price: "$24.99",
-        spicy: true
-      },
-      {
-        name: "Tandoori Cauliflower",
-        description: "Whole cauliflower marinated in yogurt and spices",
-        price: "$18.99"
-      },
-      {
-        name: "Jackfruit Kebab",
-        description: "Young jackfruit marinated and grilled with special spice blend",
-        price: "$19.99",
-        spicy: true
-      },
-      {
-        name: "Mixed Grill Platter",
-        description: "Selection of grilled vegetables and paneer with assorted dips",
-        price: "$22.99"
-      }
-    ],
-    sides: [
-      {
-        name: "Mint Chutney",
-        description: "Fresh mint leaves blended with green chilies and spices",
-        price: "$3.99"
-      },
-      {
-        name: "Grilled Vegetables",
-        description: "Seasonal vegetables grilled with herbs",
-        price: "$6.99"
-      },
-      {
-        name: "Saffron Rice",
-        description: "Aromatic basmati rice with saffron",
-        price: "$5.99"
-      },
-      {
-        name: "Assorted Breads",
-        description: "Selection of naan and roti",
-        price: "$4.99"
-      }
-    ]
-  }
+  const containerRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  })
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="min-h-screen bg-secondary-900 pt-20"
-    >
+    <div ref={containerRef} className="relative bg-secondary-900">
       {/* Hero Section */}
-      <div className="relative h-[40vh] overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1600891964092-4316c288032e')",
-          }}
+      <motion.div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <motion.div 
+          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1615361200141-f45040f367be')] bg-cover bg-center bg-no-repeat"
+          style={{ y }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary-900 via-secondary-900/50 to-secondary-900" />
-        <div className="relative h-full flex flex-col items-center justify-center text-white px-4">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-display font-bold text-center mb-4"
-          >
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-secondary-900" />
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="relative text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+        >
+          <IoRestaurant className="text-primary-400 text-5xl mx-auto mb-8" />
+          <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-8">
             Our Menu
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-gray-400 text-center max-w-2xl"
-          >
-            Discover our artisanal selection of vegetarian kebabs and sides
-          </motion.p>
-        </div>
-      </div>
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Discover our carefully crafted dishes, where traditional recipes meet modern innovation
+          </p>
+        </motion.div>
+      </motion.div>
 
-      {/* Menu Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <MenuSection title="Starters" items={menuData.starters} />
-        <MenuSection title="Main Course" items={menuData.mainCourse} />
-        <MenuSection title="Sides & Accompaniments" items={menuData.sides} />
-      </div>
-    </motion.div>
+      {/* Extra Large Spacer */}
+      <div className="h-[70vh]" />
+
+      {/* Starters Section */}
+      <MenuSection 
+        title="Starters & Small Plates" 
+        subtitle="Begin Your Journey"
+        icon={FaSeedling}
+      >
+        <MenuItem
+          name="Crispy Mushroom Tempura"
+          description="Assorted wild mushrooms in light tempura batter, served with truffle aioli"
+          price="$12"
+          isVegan
+        />
+        <MenuItem
+          name="Garden Fresh Spring Rolls"
+          description="Rice paper rolls filled with fresh vegetables and herbs, served with peanut sauce"
+          price="$10"
+          isVegan
+        />
+        <MenuItem
+          name="Spicy Cauliflower Wings"
+          description="Crispy cauliflower florets tossed in our signature spicy sauce"
+          price="$11"
+          isSpicy
+          isVegan
+        />
+      </MenuSection>
+
+      {/* Extra Large Spacer */}
+      <div className="h-[70vh]" />
+
+      {/* Main Course Section */}
+      <MenuSection 
+        title="Main Courses" 
+        subtitle="Heart of the Experience"
+        icon={GiMushrooms}
+      >
+        <MenuItem
+          name="Royal Mushroom Crown"
+          description="Stuffed portobello mushrooms with exotic spices and truffle oil"
+          price="$24"
+          isSpicy
+          isNew
+        />
+        <MenuItem
+          name="Golden Saffron Risotto"
+          description="Creamy arborio rice with saffron, wild mushrooms and aged parmesan"
+          price="$22"
+          isNew
+        />
+        <MenuItem
+          name="Buddha's Feast Bowl"
+          description="Quinoa bowl with roasted vegetables, avocado and tahini dressing"
+          price="$20"
+          isVegan
+        />
+      </MenuSection>
+
+      {/* Extra Large Spacer */}
+      <div className="h-[70vh]" />
+
+      {/* Desserts Section */}
+      <MenuSection 
+        title="Sweet Endings" 
+        subtitle="Indulge Your Senses"
+        icon={FaStar}
+      >
+        <MenuItem
+          name="Dark Chocolate Mousse"
+          description="Rich dark chocolate mousse with berry compote and gold leaf"
+          price="$12"
+          isNew
+        />
+        <MenuItem
+          name="Saffron Poached Pear"
+          description="Pears poached in saffron syrup with cardamom ice cream"
+          price="$14"
+          isVegan
+        />
+        <MenuItem
+          name="Pistachio Rose Cake"
+          description="Layered cake with rose water cream and crushed pistachios"
+          price="$13"
+        />
+      </MenuSection>
+
+      {/* Extra Large Spacer */}
+      <div className="h-[70vh]" />
+
+      {/* Drinks Section */}
+      <MenuSection 
+        title="Beverages" 
+        subtitle="Refresh & Revive"
+        icon={IoRestaurant}
+      >
+        <MenuItem
+          name="Signature Herb Mojito"
+          description="Fresh mint, basil, and lime with sparkling water"
+          price="$8"
+          isVegan
+        />
+        <MenuItem
+          name="Golden Turmeric Latte"
+          description="Warm blend of turmeric, ginger, and almond milk"
+          price="$6"
+          isVegan
+        />
+        <MenuItem
+          name="Berry Kombucha Fizz"
+          description="House-made kombucha with mixed berry infusion"
+          price="$7"
+          isNew
+        />
+      </MenuSection>
+
+      {/* Extra Large Spacer */}
+      <div className="h-[70vh]" />
+
+      {/* Final Spacer */}
+      <div className="h-[50vh]" />
+    </div>
   )
 }
 
