@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Lenis from 'lenis'
 import { AnimatePresence } from 'framer-motion'
@@ -8,13 +8,10 @@ import About from './pages/About'
 import Menu from './pages/Menu'
 import Gallery from './pages/Gallery'
 import Contact from './pages/Contact'
-import CustomCursor from './components/CustomCursor'
 import ScrollProgress from './components/ScrollProgress'
 import './index.css'
 
 function App() {
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 })
-
   useEffect(() => {
     // Initialize smooth scroll
     const lenis = new Lenis({
@@ -36,15 +33,7 @@ function App() {
 
     requestAnimationFrame(raf)
 
-    // Custom cursor
-    const handleMouseMove = (e) => {
-      setCursorPosition({ x: e.clientX, y: e.clientY })
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
       lenis.destroy()
     }
   }, [])
@@ -52,7 +41,6 @@ function App() {
   return (
     <Router>
       <div className="relative min-h-screen bg-white">
-        <CustomCursor position={cursorPosition} />
         <ScrollProgress />
         <Navbar />
         <AnimatePresence mode="wait">

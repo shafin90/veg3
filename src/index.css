@@ -18,18 +18,6 @@
   }
 }
 
-.custom-cursor {
-  @apply fixed w-8 h-8 rounded-full pointer-events-none z-[100] mix-blend-difference;
-  background: rgba(255, 255, 255, 0.8);
-  transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s;
-}
-
-.custom-cursor.hover {
-  width: 40px;
-  height: 40px;
-}
-
 .parallax-section {
   @apply relative overflow-hidden;
 }
