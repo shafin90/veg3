@@ -13,17 +13,17 @@ const MenuSection = ({ title, subtitle, children, icon: Icon }) => {
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [0, 1, 1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.95])
 
   return (
     <motion.section 
       ref={sectionRef}
-      className="relative min-h-screen py-32 overflow-hidden"
+      className="relative min-h-screen py-32"
     >
       <motion.div 
-        className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1606491956689-2ea866880c84')] bg-cover bg-center bg-no-repeat"
-        style={{ y, opacity: 0.05 }}
-      />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        style={{ y: useTransform(scrollYProgress, [0, 1], ["5%", "-5%"]) }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -31,10 +31,16 @@ const MenuSection = ({ title, subtitle, children, icon: Icon }) => {
           className="text-center mb-24"
         >
           <div className="flex items-center justify-center gap-4 mb-6">
-            <span className="h-[1px] w-12 bg-primary-400/50" />
+            <motion.span 
+              className="h-[1px] w-12 bg-primary-400/50"
+              style={{ scaleX: useTransform(scrollYProgress, [0, 0.5], [0, 1]) }}
+            />
             <Icon className="text-primary-400 text-2xl" />
             <h2 className="text-primary-400 font-medium tracking-wider uppercase">{subtitle}</h2>
-            <span className="h-[1px] w-12 bg-primary-400/50" />
+            <motion.span 
+              className="h-[1px] w-12 bg-primary-400/50"
+              style={{ scaleX: useTransform(scrollYProgress, [0, 0.5], [0, 1]) }}
+            />
           </div>
           <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-8 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             {title}
@@ -44,51 +50,77 @@ const MenuSection = ({ title, subtitle, children, icon: Icon }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
           {children}
         </div>
-      </div>
+      </motion.div>
     </motion.section>
   )
 }
 
-const MenuItem = ({ name, description, price, isSpicy, isVegan, isNew }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    className="group relative"
-  >
-    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-primary-400/5 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-    <div className="relative bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 group-hover:border-primary-500/30 transition-all duration-500">
-      <div className="flex justify-between items-start gap-4 mb-4">
-        <h3 className="text-xl font-display font-bold text-white group-hover:text-primary-400 transition-colors">
-          {name}
-        </h3>
-        <span className="text-primary-400 font-medium whitespace-nowrap">
-          {price}
-        </span>
-      </div>
-      <p className="text-gray-400 text-sm mb-4">
-        {description}
-      </p>
-      <div className="flex items-center gap-3">
-        {isSpicy && (
-          <span className="inline-flex items-center gap-1 text-xs font-medium text-primary-400/90 bg-primary-400/10 px-2 py-1 rounded-full">
-            <FaFire className="text-xs" /> Spicy
+const MenuItem = ({ name, description, price, isSpicy, isVegan, isNew }) => {
+  const itemRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: itemRef,
+    offset: ["start end", "end start"]
+  })
+
+  const y = useTransform(scrollYProgress, [0, 1], ["10%", "-10%"])
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.95])
+
+  return (
+    <motion.div
+      ref={itemRef}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      className="group relative"
+      style={{ y, scale }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-primary-400/5 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <motion.div 
+        className="relative bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 group-hover:border-primary-500/30 transition-all duration-500"
+        whileHover={{ y: -5, scale: 1.02 }}
+        transition={{ type: "spring", stiffness: 300 }}
+      >
+        <div className="flex justify-between items-start gap-4 mb-4">
+          <h3 className="text-xl font-display font-bold text-white group-hover:text-primary-400 transition-colors">
+            {name}
+          </h3>
+          <span className="text-primary-400 font-medium whitespace-nowrap">
+            {price}
           </span>
-        )}
-        {isVegan && (
-          <span className="inline-flex items-center gap-1 text-xs font-medium text-green-400/90 bg-green-400/10 px-2 py-1 rounded-full">
-            <FaLeaf className="text-xs" /> Vegan
-          </span>
-        )}
-        {isNew && (
-          <span className="inline-flex items-center gap-1 text-xs font-medium text-blue-400/90 bg-blue-400/10 px-2 py-1 rounded-full">
-            New
-          </span>
-        )}
-      </div>
-    </div>
-  </motion.div>
-)
+        </div>
+        <p className="text-gray-400 text-sm mb-4">
+          {description}
+        </p>
+        <div className="flex items-center gap-3">
+          {isSpicy && (
+            <motion.span 
+              className="inline-flex items-center gap-1 text-xs font-medium text-primary-400/90 bg-primary-400/10 px-2 py-1 rounded-full"
+              whileHover={{ scale: 1.05 }}
+            >
+              <FaFire className="text-xs" /> Spicy
+            </motion.span>
+          )}
+          {isVegan && (
+            <motion.span 
+              className="inline-flex items-center gap-1 text-xs font-medium text-green-400/90 bg-green-400/10 px-2 py-1 rounded-full"
+              whileHover={{ scale: 1.05 }}
+            >
+              <FaLeaf className="text-xs" /> Vegan
+            </motion.span>
+          )}
+          {isNew && (
+            <motion.span 
+              className="inline-flex items-center gap-1 text-xs font-medium text-blue-400/90 bg-blue-400/10 px-2 py-1 rounded-full"
+              whileHover={{ scale: 1.05 }}
+            >
+              New
+            </motion.span>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
 
 const Menu = () => {
   const containerRef = useRef(null)
@@ -97,24 +129,45 @@ const Menu = () => {
     offset: ["start start", "end start"]
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.1, 1.2])
+  const rotate = useTransform(scrollYProgress, [0, 1], ["0deg", "5deg"])
+
+  // Background parallax effect
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
+  const bgScale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.1, 1.15])
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.2], [0.15, 0.05])
 
   return (
     <div ref={containerRef} className="relative bg-secondary-900">
+      {/* Unified Background with Parallax */}
+      <motion.div 
+        className="fixed inset-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1606491956689-2ea866880c84')] bg-cover bg-center bg-fixed"
+        style={{ 
+          y: bgY,
+          scale: bgScale,
+          opacity: bgOpacity
+        }}
+      />
+
       {/* Hero Section */}
       <motion.div className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <motion.div 
           className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1615361200141-f45040f367be')] bg-cover bg-center bg-no-repeat"
-          style={{ y }}
+          style={{ y, scale, rotate }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-secondary-900" />
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-secondary-900"
+          style={{ opacity }}
+        />
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
           className="relative text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+          style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "100%"]) }}
         >
           <IoRestaurant className="text-primary-400 text-5xl mx-auto mb-8" />
           <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-8">
@@ -126,128 +179,131 @@ const Menu = () => {
         </motion.div>
       </motion.div>
 
-      {/* Extra Large Spacer */}
-      <div className="h-[70vh]" />
+      {/* Content Container */}
+      <div className="relative">
+        {/* Extra Large Spacer */}
+        <div className="h-[70vh]" />
 
-      {/* Starters Section */}
-      <MenuSection 
-        title="Starters & Small Plates" 
-        subtitle="Begin Your Journey"
-        icon={FaSeedling}
-      >
-        <MenuItem
-          name="Crispy Mushroom Tempura"
-          description="Assorted wild mushrooms in light tempura batter, served with truffle aioli"
-          price="$12"
-          isVegan
-        />
-        <MenuItem
-          name="Garden Fresh Spring Rolls"
-          description="Rice paper rolls filled with fresh vegetables and herbs, served with peanut sauce"
-          price="$10"
-          isVegan
-        />
-        <MenuItem
-          name="Spicy Cauliflower Wings"
-          description="Crispy cauliflower florets tossed in our signature spicy sauce"
-          price="$11"
-          isSpicy
-          isVegan
-        />
-      </MenuSection>
+        {/* Starters Section */}
+        <MenuSection 
+          title="Starters & Small Plates" 
+          subtitle="Begin Your Journey"
+          icon={FaSeedling}
+        >
+          <MenuItem
+            name="Crispy Mushroom Tempura"
+            description="Assorted wild mushrooms in light tempura batter, served with truffle aioli"
+            price="$12"
+            isVegan
+          />
+          <MenuItem
+            name="Garden Fresh Spring Rolls"
+            description="Rice paper rolls filled with fresh vegetables and herbs, served with peanut sauce"
+            price="$10"
+            isVegan
+          />
+          <MenuItem
+            name="Spicy Cauliflower Wings"
+            description="Crispy cauliflower florets tossed in our signature spicy sauce"
+            price="$11"
+            isSpicy
+            isVegan
+          />
+        </MenuSection>
 
-      {/* Extra Large Spacer */}
-      <div className="h-[70vh]" />
+        {/* Extra Large Spacer */}
+        <div className="h-[70vh]" />
 
-      {/* Main Course Section */}
-      <MenuSection 
-        title="Main Courses" 
-        subtitle="Heart of the Experience"
-        icon={GiMushrooms}
-      >
-        <MenuItem
-          name="Royal Mushroom Crown"
-          description="Stuffed portobello mushrooms with exotic spices and truffle oil"
-          price="$24"
-          isSpicy
-          isNew
-        />
-        <MenuItem
-          name="Golden Saffron Risotto"
-          description="Creamy arborio rice with saffron, wild mushrooms and aged parmesan"
-          price="$22"
-          isNew
-        />
-        <MenuItem
-          name="Buddha's Feast Bowl"
-          description="Quinoa bowl with roasted vegetables, avocado and tahini dressing"
-          price="$20"
-          isVegan
-        />
-      </MenuSection>
+        {/* Main Course Section */}
+        <MenuSection 
+          title="Main Courses" 
+          subtitle="Heart of the Experience"
+          icon={GiMushrooms}
+        >
+          <MenuItem
+            name="Royal Mushroom Crown"
+            description="Stuffed portobello mushrooms with exotic spices and truffle oil"
+            price="$24"
+            isSpicy
+            isNew
+          />
+          <MenuItem
+            name="Golden Saffron Risotto"
+            description="Creamy arborio rice with saffron, wild mushrooms and aged parmesan"
+            price="$22"
+            isNew
+          />
+          <MenuItem
+            name="Buddha's Feast Bowl"
+            description="Quinoa bowl with roasted vegetables, avocado and tahini dressing"
+            price="$20"
+            isVegan
+          />
+        </MenuSection>
 
-      {/* Extra Large Spacer */}
-      <div className="h-[70vh]" />
+        {/* Extra Large Spacer */}
+        <div className="h-[70vh]" />
 
-      {/* Desserts Section */}
-      <MenuSection 
-        title="Sweet Endings" 
-        subtitle="Indulge Your Senses"
-        icon={FaStar}
-      >
-        <MenuItem
-          name="Dark Chocolate Mousse"
-          description="Rich dark chocolate mousse with berry compote and gold leaf"
-          price="$12"
-          isNew
-        />
-        <MenuItem
-          name="Saffron Poached Pear"
-          description="Pears poached in saffron syrup with cardamom ice cream"
-          price="$14"
-          isVegan
-        />
-        <MenuItem
-          name="Pistachio Rose Cake"
-          description="Layered cake with rose water cream and crushed pistachios"
-          price="$13"
-        />
-      </MenuSection>
+        {/* Desserts Section */}
+        <MenuSection 
+          title="Sweet Endings" 
+          subtitle="Indulge Your Senses"
+          icon={FaStar}
+        >
+          <MenuItem
+            name="Dark Chocolate Mousse"
+            description="Rich dark chocolate mousse with berry compote and gold leaf"
+            price="$12"
+            isNew
+          />
+          <MenuItem
+            name="Saffron Poached Pear"
+            description="Pears poached in saffron syrup with cardamom ice cream"
+            price="$14"
+            isVegan
+          />
+          <MenuItem
+            name="Pistachio Rose Cake"
+            description="Layered cake with rose water cream and crushed pistachios"
+            price="$13"
+          />
+        </MenuSection>
 
-      {/* Extra Large Spacer */}
-      <div className="h-[70vh]" />
+        {/* Extra Large Spacer */}
+        <div className="h-[70vh]" />
 
-      {/* Drinks Section */}
-      <MenuSection 
-        title="Beverages" 
-        subtitle="Refresh & Revive"
-        icon={IoRestaurant}
-      >
-        <MenuItem
-          name="Signature Herb Mojito"
-          description="Fresh mint, basil, and lime with sparkling water"
-          price="$8"
-          isVegan
-        />
-        <MenuItem
-          name="Golden Turmeric Latte"
-          description="Warm blend of turmeric, ginger, and almond milk"
-          price="$6"
-          isVegan
-        />
-        <MenuItem
-          name="Berry Kombucha Fizz"
-          description="House-made kombucha with mixed berry infusion"
-          price="$7"
-          isNew
-        />
-      </MenuSection>
+        {/* Drinks Section */}
+        <MenuSection 
+          title="Beverages" 
+          subtitle="Refresh & Revive"
+          icon={IoRestaurant}
+        >
+          <MenuItem
+            name="Signature Herb Mojito"
+            description="Fresh mint, basil, and lime with sparkling water"
+            price="$8"
+            isVegan
+          />
+          <MenuItem
+            name="Golden Turmeric Latte"
+            description="Warm blend of turmeric, ginger, and almond milk"
+            price="$6"
+            isVegan
+          />
+          <MenuItem
+            name="Berry Kombucha Fizz"
+            description="House-made kombucha with mixed berry infusion"
+            price="$7"
+            isNew
+          />
+        </MenuSection>
 
-      {/* Extra Large Spacer */}
-      <div className="h-[70vh]" />
+        {/* Extra Large Spacer */}
+        <div className="h-[70vh]" />
 
-      {/* Final Spacer */}
-      <div className="h-[50vh]" />
+        {/* Final Spacer */}
+        <div className="h-[50vh]" />
+      </div>
     </div>
   )
 }
