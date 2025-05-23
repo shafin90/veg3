@@ -47,7 +47,7 @@ const MenuSection = ({ title, subtitle, children, icon: Icon }) => {
           </h2>
         </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-6">
           {children}
         </div>
       </motion.div>
@@ -71,53 +71,59 @@ const MenuItem = ({ name, description, price, isSpicy, isVegan, isNew }) => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      className="group relative"
+      className="group relative h-full flex flex-col"
       style={{ y, scale }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-primary-400/5 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <motion.div 
-        className="relative bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 group-hover:border-primary-500/30 transition-all duration-500"
-        whileHover={{ y: -5, scale: 1.02 }}
-        transition={{ type: "spring", stiffness: 300 }}
-      >
-        <div className="flex justify-between items-start gap-4 mb-4">
-          <h3 className="text-xl font-display font-bold text-white group-hover:text-primary-400 transition-colors">
-            {name}
-          </h3>
-          <span className="text-primary-400 font-medium whitespace-nowrap">
-            {price}
-          </span>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-primary-400/5 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative bg-white/5 backdrop-blur-lg rounded-2xl overflow-hidden border border-white/10 group-hover:border-primary-500/30 transition-all duration-500 flex flex-col h-full">
+        <div className="aspect-w-16 aspect-h-12 overflow-hidden">
+          <img
+            src="https://howinturkey.com/wp-content/uploads/2023/04/where-to-eat-kebap-in-turkey0000.jpg"
+            alt={name}
+            className="object-cover w-full h-[300px] transform group-hover:scale-110 transition-transform duration-700"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
-        <p className="text-gray-400 text-sm mb-4">
-          {description}
-        </p>
-        <div className="flex items-center gap-3">
-          {isSpicy && (
-            <motion.span 
-              className="inline-flex items-center gap-1 text-xs font-medium text-primary-400/90 bg-primary-400/10 px-2 py-1 rounded-full"
-              whileHover={{ scale: 1.05 }}
-            >
-              <FaFire className="text-xs" /> Spicy
-            </motion.span>
-          )}
-          {isVegan && (
-            <motion.span 
-              className="inline-flex items-center gap-1 text-xs font-medium text-green-400/90 bg-green-400/10 px-2 py-1 rounded-full"
-              whileHover={{ scale: 1.05 }}
-            >
-              <FaLeaf className="text-xs" /> Vegan
-            </motion.span>
-          )}
-          {isNew && (
-            <motion.span 
-              className="inline-flex items-center gap-1 text-xs font-medium text-blue-400/90 bg-blue-400/10 px-2 py-1 rounded-full"
-              whileHover={{ scale: 1.05 }}
-            >
-              New
-            </motion.span>
-          )}
+        <div className="p-8 flex flex-col flex-grow">
+          <div className="flex justify-between items-start gap-4 mb-4">
+            <h3 className="text-2xl font-display font-bold text-white group-hover:text-primary-400 transition-colors">
+              {name}
+            </h3>
+            <span className="text-xl text-primary-400 font-medium whitespace-nowrap">
+              {price}
+            </span>
+          </div>
+          <p className="text-gray-400 text-base mb-6 flex-grow">
+            {description}
+          </p>
+          <div className="flex items-center gap-3 mt-auto">
+            {isSpicy && (
+              <motion.span 
+                className="inline-flex items-center gap-1 text-sm font-medium text-primary-400/90 bg-primary-400/10 px-3 py-1.5 rounded-full"
+                whileHover={{ scale: 1.05 }}
+              >
+                <FaFire className="text-sm" /> Spicy
+              </motion.span>
+            )}
+            {isVegan && (
+              <motion.span 
+                className="inline-flex items-center gap-1 text-sm font-medium text-green-400/90 bg-green-400/10 px-3 py-1.5 rounded-full"
+                whileHover={{ scale: 1.05 }}
+              >
+                <FaLeaf className="text-sm" /> Vegan
+              </motion.span>
+            )}
+            {isNew && (
+              <motion.span 
+                className="inline-flex items-center gap-1 text-sm font-medium text-blue-400/90 bg-blue-400/10 px-3 py-1.5 rounded-full"
+                whileHover={{ scale: 1.05 }}
+              >
+                <FaStar className="text-sm" /> New
+              </motion.span>
+            )}
+          </div>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   )
 }
