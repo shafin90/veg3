@@ -163,27 +163,28 @@ const Contact = () => {
 
         {/* Map Section */}
         <section className="relative py-32">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="relative aspect-w-16 aspect-h-9 rounded-2xl overflow-hidden"
-            >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.119763973046!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sbd!4v1647043099272!5m2!1sen!2sbd"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Restaurant Location"
-                className="grayscale opacity-75 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-              />
-            </motion.div>
-          </div>
-        </section>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="relative rounded-2xl overflow-hidden h-[500px]"
+    >
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.119763973046!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sbd!4v1647043099272!5m2!1sen!2sbd"
+        width="100%"
+        height="100%"
+        style={{ border: 0 }}
+        allowFullScreen=""
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        title="Restaurant Location"
+        className="w-full h-full grayscale opacity-75 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+      />
+    </motion.div>
+  </div>
+</section>
+
 
         {/* Extra Large Spacer */}
         <div className="h-[70vh]" />
@@ -259,7 +260,7 @@ const Contact = () => {
         </section>
 
         {/* Final Spacer */}
-        <div className="h-[50vh]" />
+        <div className="h-[10vh]" />
       </div>
     </div>
   )
