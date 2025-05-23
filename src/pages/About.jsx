@@ -167,7 +167,7 @@ const About = () => {
         {/* Our Values */}
         <section className="relative min-h-screen py-32">
           <motion.div 
-            className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1533640924469-f04e06f8898d')] bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0  bg-cover bg-center bg-no-repeat"
             style={{ 
               y: useTransform(scrollYProgress, [0, 1], ["0%", "20%"]),
               opacity: 0.05,
