@@ -22,7 +22,7 @@ const Navbar = () => {
             to="/" 
             className="font-display text-3xl font-bold text-white hover:text-primary-400 transition-colors"
           >
-            VegFresh
+            Sebastian‘s Gemüse Kebap
           </Link>
 
           {/* Desktop Menu */}
