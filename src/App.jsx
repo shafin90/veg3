@@ -9,6 +9,7 @@ import Menu from './pages/Menu'
 import Gallery from './pages/Gallery'
 import Contact from './pages/Contact'
 import CustomCursor from './components/CustomCursor'
+import ScrollProgress from './components/ScrollProgress'
 import './index.css'
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
     <Router>
       <div className="relative min-h-screen bg-white">
         <CustomCursor position={cursorPosition} />
+        <ScrollProgress />
         <Navbar />
         <AnimatePresence mode="wait">
           <Routes>
