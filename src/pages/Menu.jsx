@@ -129,15 +129,22 @@ const Menu = () => {
     offset: ["start start", "end start"]
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.1, 1.2])
-  const rotate = useTransform(scrollYProgress, [0, 1], ["0deg", "5deg"])
-
-  // Background parallax effect
+  // Background parallax effect for the main content
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
   const bgScale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.1, 1.15])
   const bgOpacity = useTransform(scrollYProgress, [0, 0.2], [0.15, 0.05])
+
+  // Hero section specific scroll effect
+  const heroRef = useRef(null)
+  const { scrollYProgress: heroProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  })
+
+  const heroY = useTransform(heroProgress, [0, 1], ["0%", "100%"])
+  const heroScale = useTransform(heroProgress, [0, 1], [1, 1.2])
+  const heroOpacity = useTransform(heroProgress, [0, 1], [1, 0])
+  const textY = useTransform(heroProgress, [0, 1], ["0%", "100%"])
 
   return (
     <div ref={containerRef} className="relative bg-secondary-900">
@@ -152,14 +159,21 @@ const Menu = () => {
       />
 
       {/* Hero Section */}
-      <motion.div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <motion.div 
+        ref={heroRef}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      >
         <motion.div 
           className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1615361200141-f45040f367be')] bg-cover bg-center bg-no-repeat"
-          style={{ y, scale, rotate }}
+          style={{ 
+            y: heroY,
+            scale: heroScale,
+          }}
+          initial={{ scale: 1 }}
         />
         <motion.div 
           className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-secondary-900"
-          style={{ opacity }}
+          style={{ opacity: heroOpacity }}
         />
         
         <motion.div 
@@ -167,15 +181,31 @@ const Menu = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
           className="relative text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
-          style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "100%"]) }}
+          style={{ y: textY }}
         >
-          <IoRestaurant className="text-primary-400 text-5xl mx-auto mb-8" />
-          <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-8">
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
+            <IoRestaurant className="text-primary-400 text-5xl mx-auto mb-8" />
+          </motion.div>
+          <motion.h1 
+            className="text-5xl md:text-7xl font-display font-bold text-white mb-8"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
             Our Menu
-          </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          </motion.h1>
+          <motion.p 
+            className="text-xl text-gray-300 max-w-2xl mx-auto"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
             Discover our carefully crafted dishes, where traditional recipes meet modern innovation
-          </p>
+          </motion.p>
         </motion.div>
       </motion.div>
 
